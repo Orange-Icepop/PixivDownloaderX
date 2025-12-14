@@ -17,12 +17,23 @@
         <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Classes="summary" Text="Pixiv画作ID"/>
         <TextBox DockPanel.Dock="Top" HorizontalAlignment="Center" Text="{Binding ArtworkId}"/>
         <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Classes="summary" Text="使用的匹配表达式"/>
-        <ComboBox ItemsSource="{Binding PatternConfigList}" SelectedIndex="{Binding PatternIndex}">
+        <ComboBox DockPanel.Dock="Top" HorizontalAlignment="Center" ItemsSource="{Binding PatternConfigList}" SelectedIndex="{Binding PatternIndex}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}"/>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
+        <CheckBox DockPanel.Dock="Top" Content="多图画作" HorizontalAlignment="Center" IsChecked="{Binding IsMultiPictures}"/>
+        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Classes="summary" Text="应用程序信息"/>
+        <ScrollViewer DockPanel.Dock="Top" Width="300" Height="200">
+            <ItemsRepeater ItemsSource="{Binding SystemMessage}">
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate>
+                        <SelectableTextBlock Text="{Binding Message}" TextWrapping="Wrap"/>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+            </ItemsRepeater>
+        </ScrollViewer>
     </DockPanel>
 </UserControl>

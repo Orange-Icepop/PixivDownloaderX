@@ -31,7 +31,7 @@ public class ConfigViewModel
             { 0, new PatternConfig("pixiv.nl", "https://pixiv.cat/{id}.jpg", "https://pixiv.cat/{id}-{idx}.jpg") }
         };
 
-    [Reactive] public Dictionary<uint, PatternConfig> CurrentPatternConfig { get; private set; } = DefaultPatternConfig;
+    [Reactive] public Dictionary<uint, PatternConfig> CurrentPatternConfig { get; private set; }
 
     private EventHandler<string>? _configChanged;
 
@@ -57,8 +57,13 @@ public class ConfigViewModel
         try
         {
             if (!File.Exists(s_configFilePath)) return false;
-            var config = JsonSerializer.Deserialize<MainConfig>(File.ReadAllText(s_configFilePath));
-            CurrentMainConfig = config ?? throw new NullReferenceException("Cannot deserialize main config");
+            var config = JsonSerializer.Deserialize<MainConfig>(File.ReadAllText(s_configFilePath), s_jsonSerializerOptions);
+            if (config is null)
+            {
+                CurrentMainConfig = new MainConfig();
+                return false;
+            }
+            CurrentMainConfig = config;
             return true;
         }
         catch (Exception e)
@@ -74,8 +79,13 @@ public class ConfigViewModel
         {
             if (!File.Exists(s_patternConfigFilePath)) return false;
             var config =
-                JsonSerializer.Deserialize<Dictionary<uint, PatternConfig>>(File.ReadAllText(s_patternConfigFilePath));
-            CurrentPatternConfig = config ?? throw new NullReferenceException("Cannot deserialize main config");
+                JsonSerializer.Deserialize<Dictionary<uint, PatternConfig>>(File.ReadAllText(s_patternConfigFilePath), s_jsonSerializerOptions);
+            if (config is null)
+            {
+                CurrentPatternConfig = DefaultPatternConfig;
+                return false;
+            }
+            CurrentPatternConfig = config;
             return true;
         }
         catch (Exception e)

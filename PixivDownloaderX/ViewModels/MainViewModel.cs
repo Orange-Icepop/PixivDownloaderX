@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Linq;
 using PixivDownloaderX.Models;
@@ -19,14 +20,14 @@ public partial class MainViewModel : ViewModelBase
     private ConfigViewModel? _configViewModel;
     public MainViewModel()
     {
-        _configViewModel = new ConfigViewModel(((_, s) => SystemMessage.Add(s)));
+        _configViewModel = new ConfigViewModel(((_, s) => SystemMessage.Add(new ApplicationMessage(DateTime.Now, s))));
         _configViewModel.WhenAnyValue(c=>c.CurrentPatternConfig)
             .Select(o=>o.Values)
             .Select(c=>new ObservableCollection<PatternConfig>(c))
             .ToProperty(this, v => v.PatternConfigList);
     }
 
-    [Reactive] public ObservableCollection<string> SystemMessage { get; } = [];
+    [Reactive] public ObservableCollection<ApplicationMessage> SystemMessage { get; } = [];
 
     [ObservableAsProperty] private ObservableCollection<PatternConfig> _patternConfigList = [];
 }
