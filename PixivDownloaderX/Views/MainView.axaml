@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PixivDownloaderX.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="PixivDownloaderX.Views.MainView"
+             x:DataType="vm:MainViewModel">
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <DockPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Text="PixivDownloaderX"/>
+        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Classes="summary" Text="Pixiv画作ID"/>
+        <TextBox DockPanel.Dock="Top" HorizontalAlignment="Center" Text="{Binding ArtworkId}"/>
+        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Classes="summary" Text="使用的匹配表达式"/>
+        <ComboBox ItemsSource="{Binding PatternConfigList}" SelectedIndex="{Binding PatternIndex}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </DockPanel>
+</UserControl>
