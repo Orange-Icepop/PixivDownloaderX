@@ -18,16 +18,17 @@ public partial class MainViewModel : ViewModelBase
     [Reactive] public string StartRange { get; set; } = string.Empty;
     [Reactive] public string EndRange { get; set; } = string.Empty;
     private ConfigViewModel? _configViewModel;
+
     public MainViewModel()
     {
         _configViewModel = new ConfigViewModel(((_, s) => SystemMessage.Add(new ApplicationMessage(DateTime.Now, s))));
-        _configViewModel.WhenAnyValue(c=>c.CurrentPatternConfig)
-            .Select(o=>o.Values)
-            .Select(c=>new ObservableCollection<PatternConfig>(c))
-            .ToProperty(this, v => v.PatternConfigList);
+        _patternConfigListHelper = _configViewModel.WhenAnyValue(c => c.CurrentPatternConfig)
+            .Select(o => o.Values)
+            .Select(c => new ObservableCollection<PatternConfig>(c))
+            .ToProperty(this, nameof(PatternConfigList), scheduler: RxApp.MainThreadScheduler);
     }
 
-    [Reactive] public ObservableCollection<ApplicationMessage> SystemMessage { get; } = [];
+    [Reactive] public ObservableCollection<ApplicationMessage> SystemMessage { get; set; } = [];
 
     [ObservableAsProperty] private ObservableCollection<PatternConfig> _patternConfigList = [];
 }

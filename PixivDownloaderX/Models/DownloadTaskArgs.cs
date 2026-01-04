@@ -2,9 +2,9 @@ namespace PixivDownloaderX.Models;
 
 public class DownloadTaskArgs
 {
-    public required string Pattern { get; set; }
-    public required uint ArtworkId { get; set; }
-    public required bool IsMultiPictures { get; set; }
-    public required uint StartRange { get; set; }
-    public required uint EndRange { get; set; }
+    public string Pattern { get; set; } = string.Empty;
+    public uint ArtworkId { get; set; } = 0;
+    public bool IsMultiPictures { get; set; } = false;
+    public uint StartRange { get; set; } = 0;
+    public uint EndRange { get; set; } = 0;
 }

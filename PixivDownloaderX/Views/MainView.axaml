@@ -25,7 +25,11 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
         <CheckBox DockPanel.Dock="Top" Content="多图画作" HorizontalAlignment="Center" IsChecked="{Binding IsMultiPictures}"/>
-        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Classes="summary" Text="应用程序信息"/>
+        <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight" IsVisible="{Binding IsMultiPictures}">
+            <TextBlock>首个图片编号索引</TextBlock>
+            <TextBlock>最后一张图片编号索引</TextBlock>
+        </StackPanel>
+        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Left" Classes="summary" Text="日志"/>
         <ScrollViewer DockPanel.Dock="Top" Width="300" Height="200">
             <ItemsRepeater ItemsSource="{Binding SystemMessage}">
                 <ItemsRepeater.ItemTemplate>
