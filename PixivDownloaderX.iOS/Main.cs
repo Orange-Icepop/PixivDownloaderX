@@ -1,5 +1,3 @@
-using UIKit;
-
 namespace PixivDownloaderX.iOS;
 
 public class Application

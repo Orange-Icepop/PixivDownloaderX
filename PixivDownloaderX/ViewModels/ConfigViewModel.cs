@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using PixivDownloaderX.Models;
 using ReactiveUI.SourceGenerators;
 
@@ -31,25 +29,19 @@ public class ConfigViewModel
             { 0, new PatternConfig("pixiv.nl", "https://pixiv.cat/{id}.jpg", "https://pixiv.cat/{id}-{idx}.jpg") }
         };
 
-    [Reactive] public Dictionary<uint, PatternConfig> CurrentPatternConfig { get; private set; }
+    [Reactive] public Dictionary<uint, PatternConfig> CurrentPatternConfig { get; private set; } = [];
 
-    private EventHandler<string>? _configChanged;
+    public EventHandler<string>? ConfigEvent;
 
-    public ConfigViewModel(EventHandler<string>? configChanged = null)
-    {
-        _configChanged = configChanged;
-        Init();
-        if (!ReadMainConfig()) _configChanged?.Invoke(this, "由于格式错误等原因，无法读取主配置文件，改用默认配置文件。");
-        if (!ReadPatternConfig()) _configChanged?.Invoke(this, "由于格式错误等原因，无法读取模板配置文件，改用默认配置文件。");
-    }
-
-    private static void Init()
+    public void Init()
     {
         if (!File.Exists(s_configFilePath))
             File.WriteAllText(s_configFilePath, JsonSerializer.Serialize(new MainConfig(), s_jsonSerializerOptions));
         if (!File.Exists(s_patternConfigFilePath))
             File.WriteAllText(s_patternConfigFilePath,
                 JsonSerializer.Serialize(DefaultPatternConfig, s_jsonSerializerOptions));
+        if (!ReadMainConfig()) ConfigEvent?.Invoke(this, "由于格式错误等原因，无法读取主配置文件，改用默认配置文件。");
+        if (!ReadPatternConfig()) ConfigEvent?.Invoke(this, "由于格式错误等原因，无法读取模板配置文件，改用默认配置文件。");
     }
 
     private bool ReadMainConfig()

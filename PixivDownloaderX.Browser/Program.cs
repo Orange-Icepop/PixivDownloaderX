@@ -1,9 +1,8 @@
-﻿using System.Runtime.Versioning;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Browser;
-using ReactiveUI.Avalonia;
 using PixivDownloaderX;
+using ReactiveUI.Avalonia;
 
 internal sealed partial class Program
 {

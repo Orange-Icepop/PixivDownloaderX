@@ -1,11 +1,3 @@
-using Foundation;
-using UIKit;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.iOS;
-using Avalonia.Media;
-using ReactiveUI.Avalonia;
-
 namespace PixivDownloaderX.iOS;
 
 // The UIApplicationDelegate for the application. This class is responsible for launching the 
