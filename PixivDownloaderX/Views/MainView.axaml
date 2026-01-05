@@ -12,32 +12,37 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <DockPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Text="PixivDownloaderX"/>
-        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Classes="summary" Text="Pixiv画作ID"/>
-        <TextBox DockPanel.Dock="Top" HorizontalAlignment="Center" Text="{Binding ArtworkId}"/>
-        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center" Classes="summary" Text="使用的匹配表达式"/>
-        <ComboBox DockPanel.Dock="Top" HorizontalAlignment="Center" ItemsSource="{Binding PatternConfigList}" SelectedIndex="{Binding PatternIndex}">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <TextBlock HorizontalAlignment="Center" Text="PixivDownloaderX" />
+        <TextBlock HorizontalAlignment="Center" Classes="summary" Text="Pixiv画作ID" />
+        <TextBox HorizontalAlignment="Center" Text="{Binding ArtworkId}" />
+        <TextBlock HorizontalAlignment="Center" Classes="summary" Text="使用的匹配表达式" />
+        <ComboBox HorizontalAlignment="Center" ItemsSource="{Binding PatternConfigList}"
+                  SelectedIndex="{Binding PatternIndex}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}"/>
+                    <TextBlock Text="{Binding Name}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-        <CheckBox DockPanel.Dock="Top" Content="多图画作" HorizontalAlignment="Center" IsChecked="{Binding IsMultiPictures}"/>
-        <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight" IsVisible="{Binding IsMultiPictures}">
-            <TextBlock>首个图片编号索引</TextBlock>
-            <TextBlock>最后一张图片编号索引</TextBlock>
-        </StackPanel>
-        <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Left" Classes="summary" Text="日志"/>
-        <ScrollViewer DockPanel.Dock="Top" Width="300" Height="200">
+        <CheckBox Content="多图画作" HorizontalAlignment="Center" IsChecked="{Binding IsMultiPictures}" />
+
+        <TextBlock Classes="summary" Text="首个图片编号索引" />
+        <TextBox Text="{Binding StartRange}" IsEnabled="{Binding IsMultiPictures}" />
+        <TextBlock Classes="summary" Text="最后一张图片编号索引" />
+        <TextBox Text="{Binding EndRange}" IsEnabled="{Binding IsMultiPictures}" />
+        
+        <Button Content="开始下载" Command="{Binding DownloadCommand}" HorizontalAlignment="Center" Margin="0,5"/>
+        
+        <TextBlock HorizontalAlignment="Left" Classes="summary" Text="日志" />
+        <ScrollViewer Width="300" Height="200">
             <ItemsRepeater ItemsSource="{Binding SystemMessage}">
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate>
-                        <SelectableTextBlock Text="{Binding Message}" TextWrapping="Wrap"/>
+                        <SelectableTextBlock Text="{Binding Message}" TextWrapping="Wrap" />
                     </DataTemplate>
                 </ItemsRepeater.ItemTemplate>
             </ItemsRepeater>
         </ScrollViewer>
-    </DockPanel>
+    </StackPanel>
 </UserControl>

@@ -14,6 +14,7 @@ public class WebService
 {
     public WebService(MainConfig mainConfig)
     {
+        _mainConfig = mainConfig;
         var handler = new HttpClientHandler()
         {
             MaxConnectionsPerServer = (int)mainConfig.ConcurrencyLimit
@@ -38,41 +39,51 @@ public class WebService
         _httpClient = new HttpClient(handler);
     }
 
+    private readonly MainConfig _mainConfig;
+    
     public EventHandler<string>? WebEvent;
 
     private readonly HttpClient _httpClient;
 
-    public async Task Download(DownloadTaskArgs args, MainConfig mainConfig)
+    public async Task Download(DownloadTaskArgs args)
     {
-        var dir = Path.Combine(mainConfig.DownloadDirectory, args.ArtworkId.ToString());
+        var dir = Path.Combine(_mainConfig.DownloadDirectory, args.ArtworkId.ToString());
         Directory.CreateDirectory(dir);
         List<DownloadTaskInfo> tasks = [];
-        if (args.IsMultiPictures)
+        try
         {
-            var splits = Converters.ConvertMultiPattern(args.Pattern);
-            if (splits.IdFirst)
+            if (args.IsMultiPictures)
             {
-                for (var i = args.StartRange; i <= args.EndRange; i++)
+                var splits = Converters.ConvertMultiPattern(args.Pattern);
+                if (splits.IdFirst)
                 {
-                    tasks.Add(new DownloadTaskInfo(
-                        splits.Parts[0] + args.ArtworkId + splits.Parts[1] + i + splits.Parts[2],
-                        args.ArtworkId + '-' + i + ".jpg"));
+                    for (var i = args.StartRange; i <= args.EndRange; i++)
+                    {
+                        tasks.Add(new DownloadTaskInfo(
+                            splits.Parts[0] + args.ArtworkId + splits.Parts[1] + i + splits.Parts[2],
+                            args.ArtworkId + '-' + i + ".jpg"));
+                    }
+                }
+                else
+                {
+                    for (var i = args.StartRange; i <= args.EndRange; i++)
+                    {
+                        tasks.Add(new DownloadTaskInfo(
+                            splits.Parts[0] + i + splits.Parts[1] + args.ArtworkId + splits.Parts[2],
+                            args.ArtworkId + '-' + i + ".jpg"));
+                    }
                 }
             }
             else
             {
-                for (var i = args.StartRange; i <= args.EndRange; i++)
-                {
-                    tasks.Add(new DownloadTaskInfo(
-                        splits.Parts[0] + i + splits.Parts[1] + args.ArtworkId + splits.Parts[2],
-                        args.ArtworkId + '-' + i + ".jpg"));
-                }
+                var splits = Converters.ConvertSinglePattern(args.Pattern);
+                tasks.Add(new DownloadTaskInfo(splits[0] + args.ArtworkId + splits[1], args.ArtworkId + ".jpg"));
             }
         }
-        else
+        catch (Exception e)
         {
-            var splits = Converters.ConvertSinglePattern(args.Pattern);
-            tasks.Add(new DownloadTaskInfo(splits[0] + args.ArtworkId + splits[1], args.ArtworkId + ".jpg"));
+            WebEvent?.Invoke(this, e.Message);
+            return;
         }
 
         await Connect(tasks);

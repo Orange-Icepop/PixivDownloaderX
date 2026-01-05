@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using PixivDownloaderX.Models;
 using PixivDownloaderX.Services;
 using PixivDownloaderX.Utilities;
@@ -11,12 +12,11 @@ namespace PixivDownloaderX.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    public string Greeting { get; } = "Welcome to Avalonia!";
-    [Reactive] public int PatternIndex { get; set; }
-    [Reactive] [ArtworkIdValidator] public string ArtworkId { get; set; } = string.Empty;
-    [Reactive] public bool IsMultiPictures { get; set; } = false;
-    [Reactive] public string StartRange { get; set; } = string.Empty;
-    [Reactive] public string EndRange { get; set; } = string.Empty;
+    [Reactive] private int _patternIndex;
+    [Reactive] [ArtworkIdValidator] private string _artworkId = string.Empty;
+    [Reactive] private bool _isMultiPictures = false;
+    [Reactive] private string _startRange = string.Empty;
+    [Reactive] private string _endRange = string.Empty;
     private ConfigViewModel? _configViewModel;
     private WebService _webService;
 
@@ -36,4 +36,20 @@ public partial class MainViewModel : ViewModelBase
     [Reactive] public ObservableCollection<ApplicationMessage> SystemMessage { get; set; } = [];
 
     [ObservableAsProperty] private ObservableCollection<PatternConfig> _patternConfigList = [];
+
+    [ReactiveCommand]
+    private async Task Download()
+    {
+        if (!DownloadTaskArgs.TryCreate(
+                IsMultiPictures
+                    ? PatternConfigList[PatternIndex].MultiPattern
+                    : PatternConfigList[PatternIndex].SinglePattern,
+                ArtworkId, IsMultiPictures, StartRange, EndRange, out var args))
+        {
+            SystemMessage.Add(new ApplicationMessage(DateTime.Now, "下载信息有误，请检查"));
+            return;
+        }
+
+        await _webService.Download(args);
+    }
 }
