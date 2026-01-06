@@ -13,10 +13,10 @@ namespace PixivDownloaderX.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     [Reactive] private int _patternIndex;
-    [Reactive] [ArtworkIdValidator] private string _artworkId = string.Empty;
+    [Reactive] [NumericValidator] private string _artworkId = string.Empty;
     [Reactive] private bool _isMultiPictures = false;
-    [Reactive] private string _startRange = string.Empty;
-    [Reactive] private string _endRange = string.Empty;
+    [Reactive] [NumericValidator] private string _startRange = "0";
+    [Reactive] [NumericValidator] private string _endRange = "0";
     private ConfigViewModel? _configViewModel;
     private WebService _webService;
 
@@ -33,7 +33,7 @@ public partial class MainViewModel : ViewModelBase
             .ToProperty(this, nameof(PatternConfigList), scheduler: RxApp.MainThreadScheduler);
     }
 
-    [Reactive] public ObservableCollection<ApplicationMessage> SystemMessage { get; set; } = [];
+    [Reactive] private ObservableCollection<ApplicationMessage> _systemMessage = [];
 
     [ObservableAsProperty] private ObservableCollection<PatternConfig> _patternConfigList = [];
 

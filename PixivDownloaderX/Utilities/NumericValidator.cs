@@ -2,12 +2,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PixivDownloaderX.Utilities;
 
-public class ArtworkIdValidator : ValidationAttribute
+public class NumericValidator : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         return ulong.TryParse(value?.ToString(), out _)
             ? ValidationResult.Success
-            : new ValidationResult("Invalid Artwork Id");
+            : new ValidationResult("不是数字");
     }
 }
